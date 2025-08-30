@@ -159,7 +159,7 @@ router.get('/', optionalAuth, async (req, res) => {
     };
 
     // Cache the response
-    cacheManager.set(cacheKey, response, 300); // 5 minutes
+    cacheManager.set(cacheKey, response, cacheManager.ttlConfig.videos); // Use configured TTL
     res.set('X-Cache', 'MISS');
     res.json(response);
   } catch (error) {
@@ -239,8 +239,8 @@ router.get('/trending', optionalAuth, async (req, res) => {
     
     const response = { videos: videosJSON };
     
-    // Cache for 1 hour
-    cacheManager.set(cacheKey, response, 3600);
+    // Cache with configured TTL for trending
+    cacheManager.set(cacheKey, response, cacheManager.ttlConfig.trending);
     res.set('X-Cache', 'MISS');
     res.json(response);
   } catch (error) {
@@ -413,6 +413,11 @@ router.post('/upload', [
     if (cacheManager) {
       cacheManager.flush();
       console.log('Cleared ALL caches after upload');
+      
+      // Also explicitly clear pattern-based caches
+      cacheManager.flushPattern('videos:');
+      cacheManager.flushPattern('trending:');
+      cacheManager.flushPattern('subscriptions:');
     }
 
     // Send notifications to subscribers about new video
@@ -420,9 +425,12 @@ router.post('/upload', [
       NotificationHelper.notifyNewVideo(video, req.user, req);
     }
 
+    // Convert to JSON to ensure proper URL transformation
+    const videoJSON = video.toJSON();
+
     res.status(201).json({
       message: 'Video uploaded successfully',
-      video
+      video: videoJSON
     });
   } catch (error) {
     console.error('Video upload error:', error);

@@ -12,15 +12,15 @@ class CacheManager {
 
     // Cache configuration for different data types
     this.ttlConfig = {
-      videos: 300,        // 5 minutes for video lists
-      video: 600,         // 10 minutes for single video
+      videos: 60,         // 1 minute for video lists (reduced for faster updates)
+      video: 300,         // 5 minutes for single video
       user: 1800,         // 30 minutes for user data
       channel: 1800,      // 30 minutes for channel data
       comments: 180,      // 3 minutes for comments
       search: 300,        // 5 minutes for search results
-      trending: 3600,     // 1 hour for trending content
+      trending: 120,      // 2 minutes for trending content (reduced for faster updates)
       analytics: 60,      // 1 minute for analytics (more dynamic)
-      subscriptions: 300, // 5 minutes for subscription feed
+      subscriptions: 60,  // 1 minute for subscription feed (reduced for faster updates)
       playlists: 600,     // 10 minutes for playlists
       notifications: 30   // 30 seconds for notifications (real-time)
     };
