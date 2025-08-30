@@ -66,10 +66,10 @@ export default function TrendingPage() {
     setPage(1);
     setHasMore(true);
     
-    // Set up interval to refresh every 30 seconds
+    // Set up interval to refresh every 10 seconds for immediate visibility
     const interval = setInterval(() => {
       fetchTrendingVideos(selectedCategory, 1);
-    }, 30000);
+    }, 10000);
     
     return () => clearInterval(interval);
   }, [selectedCategory, dispatch]);

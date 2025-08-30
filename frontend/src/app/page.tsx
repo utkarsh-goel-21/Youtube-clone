@@ -93,10 +93,10 @@ function HomeContent() {
     setHasMore(true);
     fetchVideos(selectedCategory, 1);
     
-    // Set up interval to refresh every 30 seconds
+    // Set up interval to refresh every 10 seconds for immediate visibility
     const interval = setInterval(() => {
       fetchVideos(selectedCategory, 1);
-    }, 30000);
+    }, 10000);
     
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
