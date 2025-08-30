@@ -89,7 +89,11 @@ export default function TrendingPage() {
           });
           
           dispatch(setVideos([...videos, ...response.videos]));
-          setHasMore(response.pagination.current < response.pagination.pages);
+          setHasMore(
+            response.pagination?.current !== undefined && 
+            response.pagination?.pages !== undefined &&
+            response.pagination.current < response.pagination.pages
+          );
         } catch (error) {
           console.error('Error loading more videos:', error);
         } finally {

@@ -64,7 +64,7 @@ export default function HomePage() {
         const hasMorePages = response.pagination && 
                             response.pagination.current < response.pagination.pages &&
                             response.videos.length > 0;
-        setHasMore(hasMorePages);
+        setHasMore(hasMorePages || false);
       } else {
         // No videos returned, stop loading
         setHasMore(false);

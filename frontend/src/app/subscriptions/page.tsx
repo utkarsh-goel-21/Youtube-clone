@@ -57,7 +57,11 @@ export default function SubscriptionsPage() {
           setVideos(prev => [...prev, ...response.data.videos]);
         }
         
-        setHasMore(response.data.pagination.current < response.data.pagination.pages);
+        setHasMore(
+          response.data.pagination?.current !== undefined && 
+          response.data.pagination?.pages !== undefined &&
+          response.data.pagination.current < response.data.pagination.pages
+        );
       } else if (activeTab === 'channels') {
         // Fetch subscribed channels
         const response = await api.get('/users/subscriptions/me');
