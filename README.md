@@ -2,6 +2,11 @@
 
 A fully-featured YouTube clone application built from the ground up using the MERN stack with Next.js. This project demonstrates advanced full-stack development skills by implementing core YouTube functionalities including video streaming, user authentication, real-time features, and a comprehensive content management system.
 
+## 🔗 Live Demo
+- **Frontend**: [Coming Soon - Deploying to Vercel]
+- **Backend API**: [https://youtube-clone-backend-utkarsh.onrender.com](https://youtube-clone-backend-utkarsh.onrender.com)
+- **API Health Check**: [https://youtube-clone-backend-utkarsh.onrender.com/api/health](https://youtube-clone-backend-utkarsh.onrender.com/api/health)
+
 ## 🚀 Features
 
 ### Core Features
@@ -84,7 +89,7 @@ Before running the application, make sure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/Youtube-clone.git
+   git clone https://github.com/utkarsh-goel-21/Youtube-clone.git
    cd Youtube-clone
    ```
 
