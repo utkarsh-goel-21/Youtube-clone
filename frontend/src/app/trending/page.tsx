@@ -38,14 +38,16 @@ export default function TrendingPage() {
         setLoadingMore(true);
       }
 
-      // Use simple getVideos with sorting by views (like recommended does)
-      const response = await videoService.getVideos({
-        page: pageNum,
-        limit: 20,
-        category: category === 'now' ? undefined : category,
-        sortBy: 'views',
-        sortOrder: 'desc'
-      });
+      // Use recommended endpoint for first page like homepage does
+      const response = category === 'now' && pageNum === 1
+        ? await videoService.getRecommendedVideos()
+        : await videoService.getVideos({
+            page: pageNum,
+            limit: 20,
+            category: category === 'now' ? undefined : category,
+            sortBy: 'uploadedAt',
+            sortOrder: 'desc'
+          });
 
       console.log('Trending: Got', response.videos?.length || 0, 'videos');
       

@@ -66,7 +66,8 @@ export default function StudioPage() {
         // Always fetch videos directly to calculate stats (more reliable)
         console.log('Fetching videos for dashboard stats...');
         try {
-          const videosRes = await api.get('/videos/my-videos?limit=100');
+          // Use same endpoint as content tab for consistency
+          const videosRes = await api.get(`/videos/channel/${user._id || user.id}`);
           const userVideos = videosRes.data.videos || [];
           console.log(`Fetched ${userVideos.length} videos for stats calculation`);
           
