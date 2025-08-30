@@ -86,7 +86,11 @@ export default function HistoryPage() {
         const videosOnly = items.map(item => item.video);
         dispatch(setVideos(videosOnly));
 
-        setHasMore(response.pagination?.current < response.pagination?.pages);
+        setHasMore(
+          response.pagination?.current !== undefined && 
+          response.pagination?.pages !== undefined &&
+          response.pagination.current < response.pagination.pages
+        );
       } else {
         // No videos in response or empty array
         if (!append) {
