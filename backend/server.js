@@ -30,7 +30,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
+    origin: process.env.FRONTEND_URL ? 
+      [process.env.FRONTEND_URL] : 
+      ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
     credentials: true
   }
 });
