@@ -185,11 +185,10 @@ export default function UploadPage() {
       // Force refresh all video lists to show the new video
       dispatch(setVideos([])); // Clear cached videos
       
-      // Redirect to homepage to see the new video immediately
+      // Redirect to the uploaded video after a short delay
       setTimeout(() => {
-        router.push('/'); // Go to homepage instead of watch page
-        router.refresh(); // Force refresh the page
-      }, 1500);
+        router.push(`/watch/${response.data.video._id}`);
+      }, 2000);
       
     } catch (error: any) {
       setUploadStatus('error');
