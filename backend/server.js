@@ -183,16 +183,18 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   
-  // In production, log the server URL for monitoring
-  if (process.env.NODE_ENV === 'production') {
+  // Auto-ping to keep server warm on Render free tier
+  // Run on Render or in production
+  if (process.env.RENDER || process.env.NODE_ENV === 'production') {
     console.log('Server is ready to accept connections');
     console.log('Health check available at: /api/health');
     
-    // Auto-ping to keep server warm on Render free tier
     const serverUrl = process.env.RENDER_EXTERNAL_URL || 'https://youtube-clone-backend-utkarsh.onrender.com';
     const https = require('https');
     
     console.log('Starting auto-ping to keep server warm...');
+    console.log('Ping URL:', `${serverUrl}/api/health`);
+    
     setInterval(() => {
       https.get(`${serverUrl}/api/health`, (res) => {
         console.log(`Auto-ping successful: ${res.statusCode} at ${new Date().toISOString()}`);

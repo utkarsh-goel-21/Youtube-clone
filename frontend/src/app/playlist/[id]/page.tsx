@@ -42,7 +42,7 @@ interface PlaylistData {
 }
 
 export default function PlaylistPage() {
-  const params = useParams();
+  const params? = useParams();
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
   
@@ -59,12 +59,12 @@ export default function PlaylistPage() {
 
   useEffect(() => {
     fetchPlaylist();
-  }, [params.id]);
+  }, [params?.id]);
 
   const fetchPlaylist = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/playlists/${params.id}`);
+      const response = await api.get(`/playlists/${params?.id}`);
       setPlaylist(response.data.playlist);
       setIsLiked(user ? response.data.playlist.likes.includes(user.id) : false);
       setPlaylistForm({
@@ -87,7 +87,7 @@ export default function PlaylistPage() {
     }
 
     try {
-      const response = await api.post(`/playlists/${params.id}/like`);
+      const response = await api.post(`/playlists/${params?.id}/like`);
       setIsLiked(!isLiked);
       if (playlist) {
         setPlaylist({
@@ -106,7 +106,7 @@ export default function PlaylistPage() {
     if (!confirm('Remove this video from the playlist?')) return;
 
     try {
-      await api.delete(`/playlists/${params.id}/videos/${videoId}`);
+      await api.delete(`/playlists/${params?.id}/videos/${videoId}`);
       fetchPlaylist();
     } catch (error) {
       console.error('Error removing video:', error);
@@ -115,7 +115,7 @@ export default function PlaylistPage() {
 
   const handleUpdatePlaylist = async () => {
     try {
-      await api.put(`/playlists/${params.id}`, playlistForm);
+      await api.put(`/playlists/${params?.id}`, playlistForm);
       setEditMode(false);
       fetchPlaylist();
     } catch (error) {
@@ -127,7 +127,7 @@ export default function PlaylistPage() {
     if (!confirm('Are you sure you want to delete this playlist?')) return;
 
     try {
-      await api.delete(`/playlists/${params.id}`);
+      await api.delete(`/playlists/${params?.id}`);
       router.push('/library/playlists');
     } catch (error) {
       console.error('Error deleting playlist:', error);

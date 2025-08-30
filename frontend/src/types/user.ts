@@ -9,6 +9,7 @@ export interface User {
   banner?: string;
   isVerified: boolean;
   subscriberCount: number;
+  subscribers?: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -63,7 +63,7 @@ interface VideoAnalytics {
 }
 
 export default function VideoAnalyticsPage() {
-  const params = useParams();
+  const params? = useParams();
   const router = useRouter();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   
@@ -78,12 +78,12 @@ export default function VideoAnalyticsPage() {
     }
     
     fetchAnalytics();
-  }, [isAuthenticated, period, params.id]);
+  }, [isAuthenticated, period, params?.id]);
 
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/analytics/video/${params.id}`, {
+      const response = await api.get(`/analytics/video/${params?.id}`, {
         params: { period }
       });
       setAnalytics(response.data);

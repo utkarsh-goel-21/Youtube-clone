@@ -133,10 +133,10 @@ export default function VideoInfo({ video }: VideoInfoProps) {
             <button
               onClick={handleLike}
               className={`flex items-center space-x-2 px-4 py-2 rounded-l-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
-                video.userInteraction?.isLiked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
+                video.userInteraction?.liked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
               }`}
             >
-              <ThumbsUp size={20} className={video.userInteraction?.isLiked ? 'fill-current' : ''} />
+              <ThumbsUp size={20} className={video.userInteraction?.liked ? 'fill-current' : ''} />
               <span className="font-medium">
                 {formatNumber(video.likesCount || 0)}
               </span>
@@ -147,10 +147,10 @@ export default function VideoInfo({ video }: VideoInfoProps) {
             <button
               onClick={handleDislike}
               className={`flex items-center px-4 py-2 rounded-r-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
-                video.userInteraction?.isDisliked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
+                video.userInteraction?.disliked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
               }`}
             >
-              <ThumbsDown size={20} className={video.userInteraction?.isDisliked ? 'fill-current' : ''} />
+              <ThumbsDown size={20} className={video.userInteraction?.disliked ? 'fill-current' : ''} />
             </button>
           </div>
 

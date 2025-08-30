@@ -50,12 +50,12 @@ export default function ChannelPage() {
 
   useEffect(() => {
     fetchChannelData();
-  }, [params.id, activeTab, page]);
+  }, [params?.id, activeTab, page]);
 
   const fetchChannelData = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/channels/${params.id}`, {
+      const response = await api.get(`/channels/${params?.id}`, {
         params: { tab: activeTab, page, limit: 12 }
       });
       
@@ -71,7 +71,11 @@ export default function ChannelPage() {
           totalViews: response.data.totalViews || 0,
           videosCount: response.data.videosCount || 0
         });
-        setHasMore(response.data.pagination?.current < response.data.pagination?.pages);
+        setHasMore(
+          response.data.pagination?.current !== undefined && 
+          response.data.pagination?.pages !== undefined &&
+          response.data.pagination.current < response.data.pagination.pages
+        );
       } else if (activeTab === 'about') {
         setStats({
           totalViews: response.data.totalViews || 0,

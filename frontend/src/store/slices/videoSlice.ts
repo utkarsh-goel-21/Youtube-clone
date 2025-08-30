@@ -271,17 +271,17 @@ const videoSlice = createSlice({
           // Initialize userInteraction if it doesn't exist
           if (!state.currentVideo.userInteraction) {
             state.currentVideo.userInteraction = {
-              isLiked: false,
-              isDisliked: false
+              liked: false,
+              disliked: false
             };
           }
           
           // Toggle like state - if already liked, remove like, otherwise add like
-          const wasLiked = state.currentVideo.userInteraction.isLiked;
-          state.currentVideo.userInteraction.isLiked = !wasLiked;
+          const wasLiked = state.currentVideo.userInteraction.liked;
+          state.currentVideo.userInteraction.liked = !wasLiked;
           // If we're liking, remove any dislike
           if (!wasLiked) {
-            state.currentVideo.userInteraction.isDisliked = false;
+            state.currentVideo.userInteraction.disliked = false;
           }
         }
       })
@@ -294,17 +294,17 @@ const videoSlice = createSlice({
           // Initialize userInteraction if it doesn't exist
           if (!state.currentVideo.userInteraction) {
             state.currentVideo.userInteraction = {
-              isLiked: false,
-              isDisliked: false
+              liked: false,
+              disliked: false
             };
           }
           
           // Toggle dislike state - if already disliked, remove dislike, otherwise add dislike
-          const wasDisliked = state.currentVideo.userInteraction.isDisliked;
-          state.currentVideo.userInteraction.isDisliked = !wasDisliked;
+          const wasDisliked = state.currentVideo.userInteraction.disliked;
+          state.currentVideo.userInteraction.disliked = !wasDisliked;
           // If we're disliking, remove any like
           if (!wasDisliked) {
-            state.currentVideo.userInteraction.isLiked = false;
+            state.currentVideo.userInteraction.liked = false;
           }
         }
       });
