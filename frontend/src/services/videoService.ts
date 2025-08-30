@@ -30,6 +30,11 @@ export const videoService = {
     return response.data;
   },
 
+  async getRecommendedVideos(): Promise<VideoResponse> {
+    const response = await api.get('/videos/recommended');
+    return response.data;
+  },
+
   async getVideoById(videoId: string): Promise<SingleVideoResponse> {
     const response = await api.get(`/videos/${videoId}`);
     return response.data;

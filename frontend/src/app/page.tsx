@@ -46,12 +46,15 @@ function HomeContent() {
         setLoadingMore(true);
       }
 
-      const response = await videoService.getVideos({
-        page: pageNum,
-        limit: 12,
-        category: category === 'All' ? undefined : category,
-        sortBy: 'uploadedAt'
-      });
+      // Use recommended endpoint for homepage to get fresh videos
+      const response = category === 'All' && pageNum === 1 
+        ? await videoService.getRecommendedVideos()
+        : await videoService.getVideos({
+            page: pageNum,
+            limit: 12,
+            category: category === 'All' ? undefined : category,
+            sortBy: 'uploadedAt'
+          });
 
       console.log('Homepage: Fetched videos response:', response);
       console.log('Homepage: Number of videos:', response?.videos?.length);
