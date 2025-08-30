@@ -150,16 +150,17 @@ videoSchema.set('toJSON', {
                    process.env.BASE_URL || 
                    (process.env.NODE_ENV === 'production' ? 'https://youtube-clone-backend-utkarsh.onrender.com' : '');
     
-    // Convert file paths to URLs
+    // Convert file paths to URLs - use streaming endpoint for better performance
     if (ret.videoUrl) {
       // Remove any leading path and keep only the filename
       const videoFilename = ret.videoUrl.split('\\').pop().split('/').pop();
-      ret.videoUrl = baseUrl ? `${baseUrl}/uploads/${videoFilename}` : `/uploads/${videoFilename}`;
+      // Use streaming endpoint for videos
+      ret.videoUrl = baseUrl ? `${baseUrl}/api/stream/video/${videoFilename}` : `/api/stream/video/${videoFilename}`;
     }
     if (ret.thumbnailUrl) {
       // Remove any leading path and keep only the filename
       const thumbnailFilename = ret.thumbnailUrl.split('\\').pop().split('/').pop();
-      ret.thumbnailUrl = baseUrl ? `${baseUrl}/thumbnails/${thumbnailFilename}` : `/thumbnails/${thumbnailFilename}`;
+      ret.thumbnailUrl = baseUrl ? `${baseUrl}/api/stream/thumbnail/${thumbnailFilename}` : `/api/stream/thumbnail/${thumbnailFilename}`;
     }
     return ret;
   }

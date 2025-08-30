@@ -225,14 +225,14 @@ router.get('/trending', optionalAuth, async (req, res) => {
                      process.env.BASE_URL || 
                      (process.env.NODE_ENV === 'production' ? 'https://youtube-clone-backend-utkarsh.onrender.com' : '');
       
-      // Apply the same transform as the schema
+      // Apply the same transform as the schema - use streaming endpoint
       if (v.videoUrl) {
         const videoFilename = v.videoUrl.split('\\').pop().split('/').pop();
-        v.videoUrl = baseUrl ? `${baseUrl}/uploads/${videoFilename}` : `/uploads/${videoFilename}`;
+        v.videoUrl = baseUrl ? `${baseUrl}/api/stream/video/${videoFilename}` : `/api/stream/video/${videoFilename}`;
       }
       if (v.thumbnailUrl) {
         const thumbnailFilename = v.thumbnailUrl.split('\\').pop().split('/').pop();
-        v.thumbnailUrl = baseUrl ? `${baseUrl}/thumbnails/${thumbnailFilename}` : `/thumbnails/${thumbnailFilename}`;
+        v.thumbnailUrl = baseUrl ? `${baseUrl}/api/stream/thumbnail/${thumbnailFilename}` : `/api/stream/thumbnail/${thumbnailFilename}`;
       }
       return v;
     });
