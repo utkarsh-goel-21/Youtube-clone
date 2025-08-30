@@ -38,7 +38,7 @@ function HomeContent() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchVideos = useCallback(async (category: string, pageNum: number, append: boolean = false) => {
+  const fetchVideos = async (category: string, pageNum: number, append: boolean = false) => {
     try {
       if (!append) {
         dispatch(setLoading(true));
@@ -79,7 +79,7 @@ function HomeContent() {
       dispatch(setLoading(false));
       setLoadingMore(false);
     }
-  }, [dispatch]);
+  };
 
   useEffect(() => {
     const newCategory = categoryParam || 'All';
@@ -115,7 +115,7 @@ function HomeContent() {
       setPage(nextPage);
       await fetchVideos(selectedCategory, nextPage, true);
     }
-  }, [page, loadingMore, hasMore, selectedCategory, videos.length, fetchVideos]);
+  }, [page, loadingMore, hasMore, selectedCategory, videos.length]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

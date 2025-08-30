@@ -29,7 +29,7 @@ export default function TrendingPage() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetchTrendingVideos = useCallback(async (category: string, pageNum: number, append: boolean = false) => {
+  const fetchTrendingVideos = async (category: string, pageNum: number, append: boolean = false) => {
     try {
       if (!append) {
         dispatch(setLoading(true));
@@ -57,7 +57,7 @@ export default function TrendingPage() {
       dispatch(setLoading(false));
       setLoadingMore(false);
     }
-  }, [dispatch, videos]);
+  };
 
   useEffect(() => {
     // Always fetch fresh data when page loads or category changes
