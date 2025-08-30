@@ -159,6 +159,52 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
+// Get recommended videos (must be before /:id route)
+router.get('/recommended', optionalAuth, async (req, res) => {
+  try {
+    // Get ALL videos, prioritizing newest ones
+    const videos = await Video.find({ 
+      isPublic: true,
+      status: 'active'
+    })
+      .populate('author', 'username channelName avatar isVerified')
+      .sort('-uploadedAt') // Newest first
+      .limit(50); // Get more videos
+
+    // Transform video URLs for production
+    const baseUrl = process.env.RENDER_EXTERNAL_URL || 
+                   process.env.BASE_URL || 
+                   (process.env.NODE_ENV === 'production' ? 'https://youtube-clone-backend-utkarsh.onrender.com' : '');
+    
+    const videosJSON = videos.map(v => {
+      const video = v.toJSON();
+      if (video.videoUrl) {
+        const videoFilename = video.videoUrl.split('\\').pop().split('/').pop();
+        video.videoUrl = baseUrl ? `${baseUrl}/uploads/${videoFilename}` : `/uploads/${videoFilename}`;
+      }
+      if (video.thumbnailUrl) {
+        const thumbnailFilename = video.thumbnailUrl.split('\\').pop().split('/').pop();
+        video.thumbnailUrl = baseUrl ? `${baseUrl}/thumbnails/${thumbnailFilename}` : `/thumbnails/${thumbnailFilename}`;
+      }
+      return video;
+    });
+
+    // Put newest 5 videos first, then shuffle the rest
+    const newest = videosJSON.slice(0, 5);
+    const rest = videosJSON.slice(5).sort(() => 0.5 - Math.random());
+    const combined = [...newest, ...rest];
+    
+    // No caching to ensure immediate visibility
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.set('X-Cache', 'DISABLED');
+    
+    res.json({ videos: combined });
+  } catch (error) {
+    console.error('Get recommended videos error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get trending videos
 router.get('/trending', optionalAuth, async (req, res) => {
   try {
@@ -166,35 +212,46 @@ router.get('/trending', optionalAuth, async (req, res) => {
     
     // Cache disabled for immediate visibility
     
-    // Calculate trending score based on views and recency
+    // Get videos sorted by upload time (newest first) to ensure immediate visibility
+    // Also factor in views for actual trending
     const videos = await Video.aggregate([
       { $match: { status: 'active', isPublic: true } },
       {
         $addFields: {
+          daysSinceUpload: {
+            $divide: [
+              { $subtract: [new Date(), '$uploadedAt'] },
+              1000 * 60 * 60 * 24 // Convert to days
+            ]
+          },
           trendingScore: {
-            $multiply: [
-              '$views',
+            $add: [
+              // Base score for recency (higher for newer videos)
               {
-                $divide: [
-                  1,
+                $multiply: [
+                  100,
                   {
-                    $add: [
+                    $divide: [
                       1,
-                      {
+                      { $add: [1, { 
                         $divide: [
                           { $subtract: [new Date(), '$uploadedAt'] },
-                          1000 * 60 * 60 * 24 // Convert to days
+                          1000 * 60 * 60 // Hours old
                         ]
-                      }
+                      }] }
                     ]
                   }
                 ]
-              }
+              },
+              // Bonus for views
+              { $multiply: ['$views', 10] },
+              // Bonus for likes
+              { $multiply: [{ $size: '$likes' }, 50] }
             ]
           }
         }
       },
-      { $sort: { trendingScore: -1 } },
+      { $sort: { trendingScore: -1, uploadedAt: -1 } },
       { $limit: limit }
     ]);
 

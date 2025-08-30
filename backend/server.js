@@ -60,28 +60,66 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files with proper headers for video streaming
+// Video streaming with range support for better performance
 app.use('/uploads', (req, res, next) => {
-  // Set CORS headers for static files
+  const filePath = path.join(__dirname, 'uploads', req.path);
+  
+  // Check if file exists
+  if (!require('fs').existsSync(filePath)) {
+    return next();
+  }
+  
+  const stat = require('fs').statSync(filePath);
+  const fileSize = stat.size;
+  const range = req.headers.range;
+  
+  // Set CORS headers
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Range, Content-Type');
-  res.header('Accept-Ranges', 'bytes');
   res.header('Cross-Origin-Resource-Policy', 'cross-origin');
-  next();
-}, express.static(path.join(__dirname, 'uploads'), {
-  maxAge: 0, // No caching for now
-  etag: false,
-  lastModified: true,
-  setHeaders: (res, filepath) => {
-    if (filepath.endsWith('.mp4')) {
-      res.set('Content-Type', 'video/mp4');
-      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-    } else if (filepath.endsWith('.webm')) {
-      res.set('Content-Type', 'video/webm');
-      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  
+  // Handle video files with range support
+  if (filePath.endsWith('.mp4') || filePath.endsWith('.webm')) {
+    if (range) {
+      // Parse range header
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+      const chunksize = (end - start) + 1;
+      
+      // Create read stream for the requested range
+      const stream = require('fs').createReadStream(filePath, { start, end });
+      
+      // Set headers for partial content
+      res.writeHead(206, {
+        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunksize,
+        'Content-Type': filePath.endsWith('.mp4') ? 'video/mp4' : 'video/webm',
+        'Cache-Control': 'public, max-age=3600'
+      });
+      
+      stream.pipe(res);
+    } else {
+      // No range requested, send entire file
+      res.writeHead(200, {
+        'Content-Length': fileSize,
+        'Content-Type': filePath.endsWith('.mp4') ? 'video/mp4' : 'video/webm',
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': 'public, max-age=3600'
+      });
+      
+      require('fs').createReadStream(filePath).pipe(res);
     }
+  } else {
+    // Not a video file, use static middleware
+    next();
   }
+}, express.static(path.join(__dirname, 'uploads'), {
+  maxAge: '1h',
+  etag: true,
+  lastModified: true
 }));
 
 app.use('/thumbnails', (req, res, next) => {
