@@ -50,7 +50,7 @@ export default function UserMenu({ user, onClose, onLogout }: UserMenuProps) {
 
   const menuItems = [
     {
-      icon: User,
+      icon: UserIcon,
       label: 'Your channel',
       href: `/channel/${user._id || user.id}`
     },
