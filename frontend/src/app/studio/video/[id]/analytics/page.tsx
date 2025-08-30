@@ -63,7 +63,7 @@ interface VideoAnalytics {
 }
 
 export default function VideoAnalyticsPage() {
-  const params? = useParams();
+  const params = useParams();
   const router = useRouter();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   

@@ -42,7 +42,7 @@ interface PlaylistData {
 }
 
 export default function PlaylistPage() {
-  const params? = useParams();
+  const params = useParams();
   const router = useRouter();
   const { user } = useSelector((state: RootState) => state.auth);
   
