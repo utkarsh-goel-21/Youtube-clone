@@ -33,6 +33,11 @@ export default function WatchPage() {
       dispatch(fetchVideoById(id as string) as any);
       dispatch(fetchRelatedVideos(id as string) as any);
       dispatch(fetchComments({ videoId: id as string }) as any);
+      
+      // Add to watch history
+      import('../../../services/videoService').then(({ videoService }) => {
+        videoService.addToWatchHistory(id as string, 0).catch(console.error);
+      });
     }
   }, [id, dispatch]);
 

@@ -43,11 +43,8 @@ export default function TrendingPage() {
         category: category === 'now' ? undefined : category
       });
 
-      if (append && Array.isArray(videos)) {
-        dispatch(setVideos([...videos, ...response.videos]));
-      } else {
-        dispatch(setVideos(response.videos));
-      }
+      // Always replace videos for trending (no append)
+      dispatch(setVideos(response.videos));
 
       // Since trending endpoint doesn't have pagination, set hasMore to false after first load
       setHasMore(pageNum === 1 && response.videos.length >= 20);
