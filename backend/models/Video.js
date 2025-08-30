@@ -145,16 +145,21 @@ videoSchema.methods.addDislike = async function(userId) {
 // Transform output to proper URLs
 videoSchema.set('toJSON', {
   transform: function(doc, ret) {
+    // Get the base URL for production
+    const baseUrl = process.env.RENDER_EXTERNAL_URL || 
+                   process.env.BASE_URL || 
+                   (process.env.NODE_ENV === 'production' ? 'https://youtube-clone-backend-utkarsh.onrender.com' : '');
+    
     // Convert file paths to URLs
     if (ret.videoUrl) {
       // Remove any leading path and keep only the filename
       const videoFilename = ret.videoUrl.split('\\').pop().split('/').pop();
-      ret.videoUrl = `/uploads/${videoFilename}`;
+      ret.videoUrl = baseUrl ? `${baseUrl}/uploads/${videoFilename}` : `/uploads/${videoFilename}`;
     }
     if (ret.thumbnailUrl) {
       // Remove any leading path and keep only the filename
       const thumbnailFilename = ret.thumbnailUrl.split('\\').pop().split('/').pop();
-      ret.thumbnailUrl = `/thumbnails/${thumbnailFilename}`;
+      ret.thumbnailUrl = baseUrl ? `${baseUrl}/thumbnails/${thumbnailFilename}` : `/thumbnails/${thumbnailFilename}`;
     }
     return ret;
   }

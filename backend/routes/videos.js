@@ -220,14 +220,19 @@ router.get('/trending', optionalAuth, async (req, res) => {
 
     // Convert aggregated results to proper format
     const videosJSON = videos.map(v => {
+      // Get the base URL for production
+      const baseUrl = process.env.RENDER_EXTERNAL_URL || 
+                     process.env.BASE_URL || 
+                     (process.env.NODE_ENV === 'production' ? 'https://youtube-clone-backend-utkarsh.onrender.com' : '');
+      
       // Apply the same transform as the schema
       if (v.videoUrl) {
         const videoFilename = v.videoUrl.split('\\').pop().split('/').pop();
-        v.videoUrl = `/uploads/${videoFilename}`;
+        v.videoUrl = baseUrl ? `${baseUrl}/uploads/${videoFilename}` : `/uploads/${videoFilename}`;
       }
       if (v.thumbnailUrl) {
         const thumbnailFilename = v.thumbnailUrl.split('\\').pop().split('/').pop();
-        v.thumbnailUrl = `/thumbnails/${thumbnailFilename}`;
+        v.thumbnailUrl = baseUrl ? `${baseUrl}/thumbnails/${thumbnailFilename}` : `/thumbnails/${thumbnailFilename}`;
       }
       return v;
     });

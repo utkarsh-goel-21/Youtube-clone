@@ -61,19 +61,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static files with cache headers
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+app.use('/uploads', (req, res, next) => {
+  // Set CORS headers for static files
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, HEAD');
+  res.header('Access-Control-Allow-Headers', 'Range');
+  res.header('Accept-Ranges', 'bytes');
+  next();
+}, express.static(path.join(__dirname, 'uploads'), {
   maxAge: '7d',
   etag: true,
   lastModified: true,
   setHeaders: (res, path) => {
     if (path.endsWith('.mp4') || path.endsWith('.webm')) {
       res.set('Cache-Control', 'public, max-age=604800'); // 7 days for videos
+      res.set('Content-Type', path.endsWith('.mp4') ? 'video/mp4' : 'video/webm');
     } else {
       res.set('Cache-Control', 'public, max-age=86400'); // 1 day for images
     }
   }
 }));
-app.use('/thumbnails', express.static(path.join(__dirname, 'thumbnails'), {
+
+app.use('/thumbnails', (req, res, next) => {
+  // Set CORS headers for static files
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, HEAD');
+  next();
+}, express.static(path.join(__dirname, 'thumbnails'), {
   maxAge: '30d',
   etag: true,
   lastModified: true
