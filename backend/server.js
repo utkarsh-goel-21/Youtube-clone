@@ -43,32 +43,20 @@ app.use(responseTimeMiddleware);
 app.use(etagMiddleware);
 app.use(optimizeJsonMiddleware);
 
-// CORS configuration - Allow all origins in production for now
-app.use(cors({
-  origin: function(origin, callback) {
-    // In production, allow ALL origins (we can restrict later)
-    if (process.env.NODE_ENV === 'production') {
-      return callback(null, true);
-    }
-    
-    // In development, allow localhost
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://localhost:3001', 
-      'http://localhost:3002'
-    ];
-    
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
+// CORS configuration - Simple approach for production
+if (process.env.NODE_ENV === 'production') {
+  // In production, allow all origins
+  app.use(cors({
+    origin: true,
+    credentials: true
+  }));
+} else {
+  // In development, allow specific origins
+  app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
+    credentials: true
+  }));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
