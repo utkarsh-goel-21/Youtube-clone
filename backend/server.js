@@ -19,7 +19,7 @@ const streamRoutes = require('./routes/streams');
 const moderationRoutes = require('./routes/moderation');
 const adminRoutes = require('./routes/admin');
 const StreamManager = require('./utils/streamManager');
-const cacheManager = require('./utils/cacheManager');
+// const cacheManager = require('./utils/cacheManager'); // DISABLED - preventing videos from showing
 const { 
   compressionMiddleware, 
   responseTimeMiddleware, 
@@ -103,7 +103,7 @@ app.use('/thumbnails', (req, res, next) => {
 }));
 
 // Make cache manager available globally
-app.set('cache', cacheManager);
+// app.set('cache', cacheManager); // DISABLED
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/youtube-clone', {
   useNewUrlParser: true,

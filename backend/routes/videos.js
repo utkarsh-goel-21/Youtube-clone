@@ -12,12 +12,8 @@ const NotificationHelper = require('../utils/notificationHelper');
 
 const router = express.Router();
 
-// Get cache manager from app
-let cacheManager;
-router.use((req, res, next) => {
-  cacheManager = req.app.get('cache');
-  next();
-});
+// Cache DISABLED - was preventing videos from appearing immediately
+let cacheManager = null;
 
 // Get subscription feed videos
 router.get('/subscriptions', auth, async (req, res) => {
@@ -456,16 +452,7 @@ router.post('/upload', [
     await video.save();
     await video.populate('author', 'username channelName avatar');
 
-    // Clear ALL cache so new video appears immediately
-    if (cacheManager) {
-      cacheManager.flush();
-      console.log('Cleared ALL caches after upload');
-      
-      // Also explicitly clear pattern-based caches
-      cacheManager.flushPattern('videos:');
-      cacheManager.flushPattern('trending:');
-      cacheManager.flushPattern('subscriptions:');
-    }
+    // No caching - videos should appear immediately
 
     // Send notifications to subscribers about new video
     if (video.isPublic) {
