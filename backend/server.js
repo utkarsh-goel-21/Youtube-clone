@@ -17,6 +17,7 @@ const analyticsRoutes = require('./routes/analytics');
 const notificationRoutes = require('./routes/notifications');
 const streamRoutes = require('./routes/streams');
 const moderationRoutes = require('./routes/moderation');
+const adminRoutes = require('./routes/admin');
 const StreamManager = require('./utils/streamManager');
 const cacheManager = require('./utils/cacheManager');
 const { 
@@ -124,6 +125,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/streams', streamRoutes);
 app.use('/api/moderation', moderationRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint for monitoring
 app.get('/api/health', (req, res) => {

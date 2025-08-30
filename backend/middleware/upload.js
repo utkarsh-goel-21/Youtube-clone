@@ -4,10 +4,14 @@ const fs = require('fs');
 
 // Ensure directories exist
 const ensureDirectories = () => {
-  const dirs = ['./uploads', './thumbnails'];
+  const dirs = [
+    path.join(__dirname, '..', 'uploads'),
+    path.join(__dirname, '..', 'thumbnails')
+  ];
   dirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
+      console.log('Created directory:', dir);
     }
   });
 };
@@ -17,7 +21,9 @@ ensureDirectories();
 // Video upload configuration
 const videoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './uploads');
+    const uploadPath = path.join(__dirname, '..', 'uploads');
+    ensureDirectories(); // Ensure dir exists before each upload
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -28,7 +34,9 @@ const videoStorage = multer.diskStorage({
 // Thumbnail upload configuration
 const thumbnailStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, './thumbnails');
+    const thumbnailPath = path.join(__dirname, '..', 'thumbnails');
+    ensureDirectories(); // Ensure dir exists before each upload
+    cb(null, thumbnailPath);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

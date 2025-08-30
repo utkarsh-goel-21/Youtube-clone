@@ -413,18 +413,24 @@ router.post('/upload', [
     }
 
     // Generate thumbnail from video
-    const thumbnailPath = path.join('thumbnails', `${Date.now()}-${Math.round(Math.random() * 1E9)}.jpg`);
+    const thumbnailFilename = `${Date.now()}-${Math.round(Math.random() * 1E9)}.jpg`;
+    const thumbnailDir = path.join(__dirname, '..', 'thumbnails');
+    
+    // Ensure thumbnail directory exists
+    if (!require('fs').existsSync(thumbnailDir)) {
+      require('fs').mkdirSync(thumbnailDir, { recursive: true });
+    }
     
     const generateThumbnail = () => {
       return new Promise((resolve, reject) => {
         ffmpeg(req.file.path)
           .screenshots({
             count: 1,
-            folder: 'thumbnails',
-            filename: path.basename(thumbnailPath),
+            folder: thumbnailDir,
+            filename: thumbnailFilename,
             size: '1280x720'
           })
-          .on('end', () => resolve(thumbnailPath))
+          .on('end', () => resolve(thumbnailFilename))
           .on('error', (err) => {
             console.error('Thumbnail generation error:', err);
             resolve(null);
@@ -437,8 +443,8 @@ router.post('/upload', [
     const video = new Video({
       title,
       description,
-      videoUrl: req.file.path,
-      thumbnailUrl: thumbnailUrl || '/thumbnails/default.jpg',
+      videoUrl: req.file.filename, // Store just the filename, not the full path
+      thumbnailUrl: thumbnailUrl ? path.basename(thumbnailUrl) : 'default.jpg', // Store just the filename
       duration,
       author: req.user._id,
       category: category || 'Other',
