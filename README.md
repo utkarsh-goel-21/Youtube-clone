@@ -3,7 +3,7 @@
 A fully-featured YouTube clone application built from the ground up using the MERN stack with Next.js. This project demonstrates advanced full-stack development skills by implementing core YouTube functionalities including video streaming, user authentication, real-time features, and a comprehensive content management system.
 
 ## 🔗 Live Demo
-- **Frontend**: [https://youtube-clone-frontend-utkarsh.vercel.app](https://youtube-clone-frontend-utkarsh.vercel.app)
+- **Frontend**: [https://youtube-clone-git-main-utkarsh-s-projects-e6928c10.vercel.app](https://youtube-clone-git-main-utkarsh-s-projects-e6928c10.vercel.app)
 - **Backend API**: [https://youtube-clone-backend-utkarsh.onrender.com](https://youtube-clone-backend-utkarsh.onrender.com)
 - **API Health Check**: [https://youtube-clone-backend-utkarsh.onrender.com/api/health](https://youtube-clone-backend-utkarsh.onrender.com/api/health)
 
