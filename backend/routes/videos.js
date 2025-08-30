@@ -74,6 +74,7 @@ router.get('/subscriptions', auth, async (req, res) => {
 // Get current user's videos (must be before /:id route)
 router.get('/my-videos', auth, async (req, res) => {
   try {
+    console.log('MY-VIDEOS: User ID:', req.user._id);
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
@@ -91,6 +92,8 @@ router.get('/my-videos', auth, async (req, res) => {
       author: req.user._id,
       status: { $ne: 'deleted' }
     });
+    
+    console.log('MY-VIDEOS: Found', videos.length, 'videos out of', total, 'total');
 
     // Convert to JSON to apply transforms
     const videosJSON = videos.map(v => v.toJSON());
