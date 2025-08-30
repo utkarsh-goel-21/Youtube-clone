@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
-import { addVideo } from '../../store/slices/videoSlice';
+import { addVideo, setVideos } from '../../store/slices/videoSlice';
 import { uploadApi } from '../../services/api';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { 
@@ -182,10 +182,14 @@ export default function UploadPage() {
       // Add the video to Redux state immediately so it appears on homepage
       dispatch(addVideo(response.data.video));
       
-      // Redirect to the uploaded video after a short delay
+      // Force refresh all video lists to show the new video
+      dispatch(setVideos([])); // Clear cached videos
+      
+      // Redirect to homepage to see the new video immediately
       setTimeout(() => {
-        router.push(`/watch/${response.data.video._id}`);
-      }, 2000);
+        router.push('/'); // Go to homepage instead of watch page
+        router.refresh(); // Force refresh the page
+      }, 1500);
       
     } catch (error: any) {
       setUploadStatus('error');
