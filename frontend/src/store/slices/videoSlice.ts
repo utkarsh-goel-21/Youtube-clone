@@ -183,7 +183,7 @@ const videoSlice = createSlice({
       .addCase(fetchVideos.fulfilled, (state, action) => {
         state.loading = false;
         state.videos = action.payload.videos;
-        state.pagination = action.payload.pagination;
+        state.pagination = action.payload.pagination || null;
       })
       .addCase(fetchVideos.rejected, (state, action) => {
         state.loading = false;

@@ -204,7 +204,7 @@ const commentSlice = createSlice({
         state.loading = false;
         state.comments = action.payload.comments;
         state.totalComments = action.payload.total || action.payload.comments.length;
-        state.pagination = action.payload.pagination;
+        state.pagination = action.payload.pagination || null;
       })
       .addCase(fetchComments.rejected, (state, action) => {
         state.loading = false;

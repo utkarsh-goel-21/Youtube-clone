@@ -62,7 +62,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     if (href === '/') {
       return pathname === '/';
     }
-    return pathname.startsWith(href);
+    return pathname?.startsWith(href) || false;
   };
 
   const SidebarItem = ({ item, onClick }: { item: any; onClick?: () => void }) => {
