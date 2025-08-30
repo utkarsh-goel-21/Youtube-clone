@@ -54,13 +54,6 @@ export default function StudioPage() {
     }
     
     fetchData();
-    
-    // Refresh every 10 seconds to show new videos
-    const interval = setInterval(() => {
-      fetchData();
-    }, 10000);
-    
-    return () => clearInterval(interval);
   }, [isAuthenticated, activeTab, period]);
 
   const fetchData = async () => {
