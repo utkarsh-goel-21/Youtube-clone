@@ -53,6 +53,8 @@ export default function StudioPage() {
       return;
     }
     
+    // Force clear old data
+    setVideos([]);
     fetchData();
   }, [isAuthenticated, activeTab, period]);
 

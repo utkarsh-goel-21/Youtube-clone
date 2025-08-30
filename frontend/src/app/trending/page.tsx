@@ -28,6 +28,11 @@ export default function TrendingPage() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  
+  // Force clear on mount
+  useEffect(() => {
+    dispatch(setVideos([]));
+  }, [dispatch]);
 
   const fetchTrendingVideos = async (category: string, pageNum: number, append: boolean = false) => {
     try {
