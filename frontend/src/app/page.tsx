@@ -93,10 +93,11 @@ function HomeContent() {
     setHasMore(true);
     fetchVideos(selectedCategory, 1);
     
-    // Set up interval to refresh every 10 seconds for immediate visibility
+    // Set up interval to refresh every 5 seconds for immediate visibility
     const interval = setInterval(() => {
+      dispatch(setVideos([])); // Clear first
       fetchVideos(selectedCategory, 1);
-    }, 10000);
+    }, 5000);
     
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
