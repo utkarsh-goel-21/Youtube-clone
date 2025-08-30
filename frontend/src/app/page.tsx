@@ -87,9 +87,18 @@ function HomeContent() {
   }, [categoryParam]);
 
   useEffect(() => {
+    // Always fetch fresh data when category changes or page loads
+    dispatch(setVideos([])); // Clear old videos first
     setPage(1);
     setHasMore(true);
     fetchVideos(selectedCategory, 1);
+    
+    // Set up interval to refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchVideos(selectedCategory, 1);
+    }, 30000);
+    
+    return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 

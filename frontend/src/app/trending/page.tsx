@@ -60,10 +60,19 @@ export default function TrendingPage() {
   }, [dispatch, videos]);
 
   useEffect(() => {
+    // Always fetch fresh data when page loads or category changes
+    dispatch(setVideos([])); // Clear old videos first
     fetchTrendingVideos(selectedCategory, 1);
     setPage(1);
     setHasMore(true);
-  }, [selectedCategory]);
+    
+    // Set up interval to refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchTrendingVideos(selectedCategory, 1);
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [selectedCategory, dispatch]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
