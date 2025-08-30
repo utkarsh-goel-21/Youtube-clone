@@ -30,7 +30,7 @@ const categories = [
 export default function HomePage() {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
-  const categoryParam = searchParams.get('category');
+  const categoryParam = searchParams?.get('category');
   const { videos, loading } = useSelector((state: RootState) => state.videos);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(categoryParam || 'All');
