@@ -44,11 +44,19 @@ export default function VideoPlayer({ video, autoplay = false }: VideoPlayerProp
     const handleLoadedData = () => {
       setLoading(false);
       setDuration(video.duration);
-      // Ensure audio is enabled
-      video.volume = volume;
-      video.muted = isMuted;
+      // Ensure audio is enabled and at full volume
+      video.volume = 1;
+      video.muted = false;
+      setVolume(1);
+      setIsMuted(false);
       if (autoplay) {
-        video.play().catch(() => setError(true));
+        // Try to play with sound first
+        video.play().catch(() => {
+          // If autoplay with sound fails, try muted autoplay
+          video.muted = true;
+          setIsMuted(true);
+          video.play().catch(() => setError(true));
+        });
       }
     };
 
@@ -240,6 +248,8 @@ export default function VideoPlayer({ video, autoplay = false }: VideoPlayerProp
         className="w-full h-full"
         onClick={togglePlay}
         playsInline
+        muted={false}
+        controls={false}
       />
 
       {loading && (
