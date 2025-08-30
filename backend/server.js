@@ -45,12 +45,23 @@ app.use(optimizeJsonMiddleware);
 
 app.use(cors({
   origin: function(origin, callback) {
-    const allowedOrigins = process.env.FRONTEND_URL ? 
-      [process.env.FRONTEND_URL] : 
-      ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
+    // In production, allow all Vercel URLs and localhost for development
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001', 
+      'http://localhost:3002',
+      'https://youtube-clone-sigma-smoky.vercel.app',
+      'https://youtube-clone-git-main-utkarsh-s-projects-e6928c10.vercel.app',
+      'https://youtube-clone-blvrltf3y-utkarsh-s-projects-e6928c10.vercel.app'
+    ];
     
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
+    
+    // In production, also allow any Vercel app subdomain
+    if (process.env.NODE_ENV === 'production' && origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
     
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
