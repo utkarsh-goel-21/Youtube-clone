@@ -60,24 +60,26 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files with cache headers
+// Static files with proper headers for video streaming
 app.use('/uploads', (req, res, next) => {
   // Set CORS headers for static files
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, HEAD');
-  res.header('Access-Control-Allow-Headers', 'Range');
+  res.header('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Range, Content-Type');
   res.header('Accept-Ranges', 'bytes');
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
 }, express.static(path.join(__dirname, 'uploads'), {
-  maxAge: '7d',
-  etag: true,
+  maxAge: 0, // No caching for now
+  etag: false,
   lastModified: true,
-  setHeaders: (res, path) => {
-    if (path.endsWith('.mp4') || path.endsWith('.webm')) {
-      res.set('Cache-Control', 'public, max-age=604800'); // 7 days for videos
-      res.set('Content-Type', path.endsWith('.mp4') ? 'video/mp4' : 'video/webm');
-    } else {
-      res.set('Cache-Control', 'public, max-age=86400'); // 1 day for images
+  setHeaders: (res, filepath) => {
+    if (filepath.endsWith('.mp4')) {
+      res.set('Content-Type', 'video/mp4');
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    } else if (filepath.endsWith('.webm')) {
+      res.set('Content-Type', 'video/webm');
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     }
   }
 }));

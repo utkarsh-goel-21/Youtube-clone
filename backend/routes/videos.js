@@ -123,15 +123,7 @@ router.get('/', optionalAuth, async (req, res) => {
     const sortBy = req.query.sortBy || 'uploadedAt';
     const sortOrder = req.query.sortOrder === 'asc' ? 1 : -1;
 
-    // TEMPORARILY DISABLED - Check cache
-    // const cacheKey = cacheManager.generateKey('videos', {
-    //   page, limit, category, sortBy, sortOrder
-    // });
-    // const cached = cacheManager.get(cacheKey);
-    // if (cached) {
-    //   res.set('X-Cache', 'HIT');
-    //   return res.json(cached);
-    // }
+    // Cache disabled for immediate visibility
 
     let query = { status: 'active', isPublic: true };
     if (category && category !== 'all') {
@@ -158,8 +150,7 @@ router.get('/', optionalAuth, async (req, res) => {
       }
     };
 
-    // TEMPORARILY DISABLED - Cache the response
-    // cacheManager.set(cacheKey, response, cacheManager.ttlConfig.videos); // Use configured TTL
+    // Cache disabled for immediate visibility
     res.set('X-Cache', 'DISABLED');
     res.json(response);
   } catch (error) {
@@ -173,13 +164,7 @@ router.get('/trending', optionalAuth, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 12;
     
-    // TEMPORARILY DISABLED - Check cache for trending videos
-    // const cacheKey = cacheManager.generateKey('trending', { limit });
-    // const cached = cacheManager.get(cacheKey);
-    // if (cached) {
-    //   res.set('X-Cache', 'HIT');
-    //   return res.json(cached);
-    // }
+    // Cache disabled for immediate visibility
     
     // Calculate trending score based on views and recency
     const videos = await Video.aggregate([
@@ -239,8 +224,7 @@ router.get('/trending', optionalAuth, async (req, res) => {
     
     const response = { videos: videosJSON };
     
-    // TEMPORARILY DISABLED - Cache with configured TTL for trending
-    // cacheManager.set(cacheKey, response, cacheManager.ttlConfig.trending);
+    // Cache disabled for immediate visibility
     res.set('X-Cache', 'DISABLED');
     res.json(response);
   } catch (error) {
