@@ -64,6 +64,7 @@ export default function HistoryPage() {
         filter: currentFilter as any
       });
 
+      console.log('History response:', response);
       console.log('Response received, videos:', response?.videos?.length || 0);
 
       // Check if we have videos in response
