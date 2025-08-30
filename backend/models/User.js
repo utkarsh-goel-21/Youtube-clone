@@ -63,6 +63,16 @@ const userSchema = new mongoose.Schema({
     },
     duration: Number
   }],
+  watchLater: [{
+    video: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Video'
+    },
+    addedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   playlists: [{
     name: String,
     description: String,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useSearchParams } from 'next/navigation';
 import { RootState } from '../store/store';
@@ -27,7 +27,7 @@ const categories = [
   'Howto'
 ];
 
-export default function HomePage() {
+function HomeContent() {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get('category');
@@ -52,6 +52,9 @@ export default function HomePage() {
         category: category === 'All' ? undefined : category,
         sortBy: 'uploadedAt'
       });
+
+      console.log('Homepage: Fetched videos response:', response);
+      console.log('Homepage: Number of videos:', response?.videos?.length);
 
       if (response && response.videos) {
         if (append) {
@@ -173,5 +176,13 @@ export default function HomePage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <HomeContent />
+    </Suspense>
   );
 }

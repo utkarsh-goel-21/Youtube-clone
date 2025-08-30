@@ -666,4 +666,118 @@ router.get('/:id', optionalAuth, async (req, res) => {
   }
 });
 
+// Get watch later videos
+router.get('/:id/watch-later', auth, async (req, res) => {
+  try {
+    // Only allow users to get their own watch later list
+    if (req.params.id !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const user = await User.findById(req.user._id)
+      .populate({
+        path: 'watchLater.video',
+        populate: {
+          path: 'author',
+          select: 'username channelName avatar isVerified'
+        }
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Filter out null videos (deleted videos)
+    const videos = user.watchLater
+      .filter(item => item.video)
+      .map(item => ({
+        ...item.video.toObject(),
+        addedAt: item.addedAt
+      }))
+      .reverse(); // Most recently added first
+
+    res.json({ videos });
+  } catch (error) {
+    console.error('Get watch later error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Add video to watch later
+router.post('/:id/watch-later', auth, async (req, res) => {
+  try {
+    // Only allow users to add to their own watch later
+    if (req.params.id !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const { videoId } = req.body;
+    
+    if (!videoId) {
+      return res.status(400).json({ message: 'Video ID is required' });
+    }
+
+    // Check if video exists
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    const user = await User.findById(req.user._id);
+    
+    // Check if already in watch later
+    const alreadyAdded = user.watchLater.some(
+      item => item.video.toString() === videoId
+    );
+    
+    if (alreadyAdded) {
+      return res.status(400).json({ message: 'Video already in watch later' });
+    }
+
+    // Add to watch later
+    user.watchLater.push({ video: videoId });
+    await user.save();
+
+    res.json({ 
+      message: 'Added to watch later',
+      watchLater: user.watchLater
+    });
+  } catch (error) {
+    console.error('Add to watch later error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Remove video from watch later
+router.delete('/:id/watch-later/:videoId', auth, async (req, res) => {
+  try {
+    // Only allow users to remove from their own watch later
+    if (req.params.id !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const user = await User.findById(req.user._id);
+    
+    // Remove from watch later
+    const initialLength = user.watchLater.length;
+    user.watchLater = user.watchLater.filter(
+      item => item.video.toString() !== req.params.videoId
+    );
+
+    if (user.watchLater.length === initialLength) {
+      return res.status(404).json({ message: 'Video not in watch later' });
+    }
+
+    await user.save();
+
+    res.json({ 
+      message: 'Removed from watch later',
+      watchLater: user.watchLater
+    });
+  } catch (error) {
+    console.error('Remove from watch later error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;

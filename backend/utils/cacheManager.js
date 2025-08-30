@@ -102,6 +102,11 @@ class CacheManager {
     }
   }
 
+  // Alias for deletePattern for compatibility
+  flushPattern(pattern) {
+    return this.deletePattern(pattern);
+  }
+
   // Clear specific cache types
   clearVideoCache(videoId = null) {
     if (videoId) {

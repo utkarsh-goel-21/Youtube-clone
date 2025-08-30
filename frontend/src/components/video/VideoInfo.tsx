@@ -104,11 +104,11 @@ export default function VideoInfo({ video }: VideoInfoProps) {
   };
 
   useEffect(() => {
-    // Check if user is subscribed
-    if (user && video.author.subscribers) {
-      setIsSubscribed(video.author.subscribers.includes(user._id));
+    // Check if user is subscribed (this should be set from the video response)
+    if (video.userInteraction?.isSubscribed !== undefined) {
+      setIsSubscribed(video.userInteraction.isSubscribed);
     }
-  }, [user, video]);
+  }, [video]);
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">

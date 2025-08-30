@@ -203,7 +203,7 @@ const commentSlice = createSlice({
       .addCase(fetchComments.fulfilled, (state, action) => {
         state.loading = false;
         state.comments = action.payload.comments;
-        state.totalComments = action.payload.total || action.payload.comments.length;
+        state.totalComments = action.payload.pagination?.total || action.payload.comments.length;
         state.pagination = action.payload.pagination || null;
       })
       .addCase(fetchComments.rejected, (state, action) => {

@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
+import { addVideo } from '../../store/slices/videoSlice';
 import { uploadApi } from '../../services/api';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { 
@@ -26,6 +27,7 @@ const categories = [
 
 export default function UploadPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -176,6 +178,9 @@ export default function UploadPage() {
       });
       
       setUploadStatus('success');
+      
+      // Add the video to Redux state immediately so it appears on homepage
+      dispatch(addVideo(response.data.video));
       
       // Redirect to the uploaded video after a short delay
       setTimeout(() => {

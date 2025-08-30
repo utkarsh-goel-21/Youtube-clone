@@ -3,7 +3,7 @@ import { videoService } from '../../services/videoService';
 import type { Video, VideoUploadData, VideoWithInteraction } from '../../types/video';
 
 interface VideoState {
-  videos: Video[];
+  videos: VideoWithInteraction[];
   currentVideo: VideoWithInteraction | null;
   relatedVideos: Video[];
   userVideos: Video[];
@@ -56,7 +56,7 @@ export const fetchVideoById = createAsyncThunk(
 export const fetchTrendingVideos = createAsyncThunk(
   'videos/fetchTrendingVideos',
   async (limit: number = 12) => {
-    const response = await videoService.getTrendingVideos(limit);
+    const response = await videoService.getTrendingVideos({ limit });
     return response;
   }
 );
@@ -71,7 +71,7 @@ export const fetchRelatedVideos = createAsyncThunk(
 
 export const searchVideos = createAsyncThunk(
   'videos/searchVideos',
-  async (params: { q: string; type?: string; page?: number; limit?: number; sortBy?: string }) => {
+  async (params: { q: string; type?: 'all' | 'videos' | 'channels'; page?: number; limit?: number; sortBy?: 'relevance' | 'upload_date' | 'view_count' | 'rating' }) => {
     const response = await videoService.searchVideos(params);
     return response;
   }
@@ -135,16 +135,16 @@ const videoSlice = createSlice({
   name: 'videos',
   initialState,
   reducers: {
-    setVideos: (state, action: PayloadAction<Video[]>) => {
+    setVideos: (state, action: PayloadAction<any[]>) => {
       state.videos = action.payload;
     },
-    appendVideos: (state, action: PayloadAction<Video[]>) => {
+    appendVideos: (state, action: PayloadAction<any[]>) => {
       state.videos = [...state.videos, ...action.payload];
     },
-    addVideo: (state, action: PayloadAction<Video>) => {
+    addVideo: (state, action: PayloadAction<VideoWithInteraction>) => {
       state.videos.unshift(action.payload);
     },
-    updateVideoInList: (state, action: PayloadAction<Video>) => {
+    updateVideoInList: (state, action: PayloadAction<VideoWithInteraction>) => {
       const index = state.videos.findIndex(v => v._id === action.payload._id);
       if (index !== -1) {
         state.videos[index] = action.payload;
@@ -196,10 +196,14 @@ const videoSlice = createSlice({
       })
       .addCase(fetchVideoById.fulfilled, (state, action) => {
         state.loading = false;
-        // Combine video with userInteraction
+        // Combine video with userInteraction, mapping isLiked/isDisliked to liked/disliked
         state.currentVideo = {
           ...action.payload.video,
-          userInteraction: action.payload.userInteraction
+          userInteraction: action.payload.userInteraction ? {
+            liked: action.payload.userInteraction.isLiked,
+            disliked: action.payload.userInteraction.isDisliked,
+            isSubscribed: action.payload.userInteraction.isSubscribed
+          } : undefined
         };
       })
       .addCase(fetchVideoById.rejected, (state, action) => {
@@ -263,6 +267,7 @@ const videoSlice = createSlice({
       })
       // Like/dislike video
       .addCase(likeVideo.fulfilled, (state, action) => {
+        // Update current video if it matches
         if (state.currentVideo && state.currentVideo._id === action.payload.videoId) {
           // Update counts
           state.currentVideo.likesCount = action.payload.likesCount;
@@ -284,8 +289,29 @@ const videoSlice = createSlice({
             state.currentVideo.userInteraction.disliked = false;
           }
         }
+        
+        // Also update video in the list
+        const videoIndex = state.videos.findIndex(v => v._id === action.payload.videoId);
+        if (videoIndex !== -1) {
+          state.videos[videoIndex].likesCount = action.payload.likesCount;
+          state.videos[videoIndex].dislikesCount = action.payload.dislikesCount;
+          
+          if (!state.videos[videoIndex].userInteraction) {
+            state.videos[videoIndex].userInteraction = {
+              liked: false,
+              disliked: false
+            };
+          }
+          
+          const wasLiked = state.videos[videoIndex].userInteraction.liked;
+          state.videos[videoIndex].userInteraction.liked = !wasLiked;
+          if (!wasLiked) {
+            state.videos[videoIndex].userInteraction.disliked = false;
+          }
+        }
       })
       .addCase(dislikeVideo.fulfilled, (state, action) => {
+        // Update current video if it matches
         if (state.currentVideo && state.currentVideo._id === action.payload.videoId) {
           // Update counts
           state.currentVideo.likesCount = action.payload.likesCount;
@@ -305,6 +331,26 @@ const videoSlice = createSlice({
           // If we're disliking, remove any like
           if (!wasDisliked) {
             state.currentVideo.userInteraction.liked = false;
+          }
+        }
+        
+        // Also update video in the list
+        const videoIndex = state.videos.findIndex(v => v._id === action.payload.videoId);
+        if (videoIndex !== -1) {
+          state.videos[videoIndex].likesCount = action.payload.likesCount;
+          state.videos[videoIndex].dislikesCount = action.payload.dislikesCount;
+          
+          if (!state.videos[videoIndex].userInteraction) {
+            state.videos[videoIndex].userInteraction = {
+              liked: false,
+              disliked: false
+            };
+          }
+          
+          const wasDisliked = state.videos[videoIndex].userInteraction.disliked;
+          state.videos[videoIndex].userInteraction.disliked = !wasDisliked;
+          if (!wasDisliked) {
+            state.videos[videoIndex].userInteraction.liked = false;
           }
         }
       });

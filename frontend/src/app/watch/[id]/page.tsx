@@ -21,7 +21,8 @@ import CommentSection from '../../../components/comment/CommentSection';
 import LoadingSpinner from '../../../components/ui/LoadingSpinner';
 
 export default function WatchPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params?.id;
   const dispatch = useDispatch();
   const { currentVideo, relatedVideos, loading } = useSelector((state: RootState) => state.videos);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);

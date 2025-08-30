@@ -16,7 +16,7 @@ interface Playlist {
   _id: string;
   title: string;
   isPublic: boolean;
-  videos: Array<{ video: string }>;
+  videos: Array<{ video: string | { _id: string } }>;
 }
 
 export default function SaveToPlaylist({ videoId, onClose }: SaveToPlaylistProps) {
@@ -32,6 +32,8 @@ export default function SaveToPlaylist({ videoId, onClose }: SaveToPlaylistProps
     isPublic: true
   });
   const [saving, setSaving] = useState<string | null>(null);
+  const [isInWatchLater, setIsInWatchLater] = useState(false);
+  const [watchLaterLoading, setWatchLaterLoading] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -45,12 +47,40 @@ export default function SaveToPlaylist({ videoId, onClose }: SaveToPlaylistProps
   const fetchPlaylists = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/playlists/my');
-      setPlaylists(response.data.playlists);
+      const [playlistsResponse, watchLaterResponse] = await Promise.all([
+        api.get('/playlists/my'),
+        api.get(`/users/${user?.id}/watch-later`)
+      ]);
+      
+      setPlaylists(playlistsResponse.data.playlists);
+      
+      // Check if video is in watch later
+      const watchLaterVideos = watchLaterResponse.data.videos || [];
+      setIsInWatchLater(watchLaterVideos.some((v: any) => v._id === videoId));
     } catch (error) {
       console.error('Error fetching playlists:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggleWatchLater = async () => {
+    setWatchLaterLoading(true);
+    
+    try {
+      if (isInWatchLater) {
+        // Remove from watch later
+        await api.delete(`/users/${user?.id}/watch-later/${videoId}`);
+        setIsInWatchLater(false);
+      } else {
+        // Add to watch later
+        await api.post(`/users/${user?.id}/watch-later`, { videoId });
+        setIsInWatchLater(true);
+      }
+    } catch (error) {
+      console.error('Error updating watch later:', error);
+    } finally {
+      setWatchLaterLoading(false);
     }
   };
 
@@ -130,6 +160,28 @@ export default function SaveToPlaylist({ videoId, onClose }: SaveToPlaylistProps
           <>
             {/* Existing Playlists */}
             <div className="p-4 space-y-2">
+              {/* Watch Later - Special Playlist */}
+              <button
+                onClick={handleToggleWatchLater}
+                disabled={watchLaterLoading}
+                className="w-full flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors border-b dark:border-gray-700"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-5 h-5 border-2 rounded flex items-center justify-center ${
+                    isInWatchLater 
+                      ? 'bg-blue-600 border-blue-600' 
+                      : 'border-gray-400'
+                  }`}>
+                    {isInWatchLater && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span className="font-medium">Watch Later</span>
+                </div>
+                {watchLaterLoading && (
+                  <span className="text-sm text-gray-500">Saving...</span>
+                )}
+              </button>
+              
+              {/* Regular Playlists */}
               {playlists.map((playlist) => {
                 const isInPlaylist = playlist.videos.some(v => 
                   (typeof v.video === 'string' ? v.video : v.video._id) === videoId

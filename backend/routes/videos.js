@@ -404,6 +404,12 @@ router.post('/upload', [
     await video.save();
     await video.populate('author', 'username channelName avatar');
 
+    // Clear ALL cache so new video appears immediately
+    if (cacheManager) {
+      cacheManager.flush();
+      console.log('Cleared ALL caches after upload');
+    }
+
     // Send notifications to subscribers about new video
     if (video.isPublic) {
       NotificationHelper.notifyNewVideo(video, req.user, req);
@@ -473,6 +479,13 @@ router.put('/:id', [
 
     await video.save();
     await video.populate('author', 'username channelName avatar');
+
+    // Clear video-related caches after update
+    if (cacheManager) {
+      cacheManager.flushPattern('videos:*');
+      cacheManager.flushPattern(`video:${video._id}`);
+      console.log('Cleared video caches after update');
+    }
 
     res.json({
       message: 'Video updated successfully',

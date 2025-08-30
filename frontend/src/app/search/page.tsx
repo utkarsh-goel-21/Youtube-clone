@@ -48,11 +48,19 @@ function SearchContent() {
       
       // Search videos
       if (filters.type === 'all' || filters.type === 'video') {
+        // Map the sortBy values to match the expected API values
+        const sortByMap: Record<string, 'relevance' | 'upload_date' | 'view_count' | 'rating'> = {
+          'relevance': 'relevance',
+          'date': 'upload_date',
+          'views': 'view_count',
+          'rating': 'rating'
+        };
+        
         const searchParams = {
           q: query,
           uploadDate: filters.uploadDate,
           duration: filters.duration,
-          sortBy: filters.sortBy
+          sortBy: sortByMap[filters.sortBy] || 'relevance'
         };
         
         dispatch(searchVideos(searchParams) as any);
