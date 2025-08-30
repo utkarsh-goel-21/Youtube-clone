@@ -188,17 +188,26 @@ server.listen(PORT, () => {
     console.log('Server is ready to accept connections');
     console.log('Health check available at: /api/health');
     
-    // Optional: Self-ping to keep warm (works with Render's free tier)
-    // This helps but UptimeRobot is still recommended
-    if (process.env.RENDER_EXTERNAL_URL) {
-      const https = require('https');
-      setInterval(() => {
-        https.get(`${process.env.RENDER_EXTERNAL_URL}/api/health`, (res) => {
-          console.log(`Self-ping: ${res.statusCode}`);
-        }).on('error', (err) => {
-          console.error('Self-ping error:', err.message);
-        });
-      }, 5 * 60 * 1000); // Ping every 5 minutes
-    }
+    // Auto-ping to keep server warm on Render free tier
+    const serverUrl = process.env.RENDER_EXTERNAL_URL || 'https://youtube-clone-backend-utkarsh.onrender.com';
+    const https = require('https');
+    
+    console.log('Starting auto-ping to keep server warm...');
+    setInterval(() => {
+      https.get(`${serverUrl}/api/health`, (res) => {
+        console.log(`Auto-ping successful: ${res.statusCode} at ${new Date().toISOString()}`);
+      }).on('error', (err) => {
+        console.error('Auto-ping error:', err.message);
+      });
+    }, 4 * 60 * 1000); // Ping every 4 minutes
+    
+    // Initial ping after 30 seconds
+    setTimeout(() => {
+      https.get(`${serverUrl}/api/health`, (res) => {
+        console.log(`Initial ping: ${res.statusCode}`);
+      }).on('error', (err) => {
+        console.error('Initial ping error:', err.message);
+      });
+    }, 30000);
   }
 });
