@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
-import { setVideos, setLoading } from '../../store/slices/videoSlice';
+import { setVideos, setLoading, appendVideos } from '../../store/slices/videoSlice';
 import { videoService } from '../../services/videoService';
 import Header from '../../components/layout/Header';
 import Sidebar from '../../components/layout/Sidebar';
@@ -29,10 +29,6 @@ export default function TrendingPage() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   
-  // Force clear on mount
-  useEffect(() => {
-    dispatch(setVideos([]));
-  }, [dispatch]);
 
   const fetchTrendingVideos = async (category: string, pageNum: number, append: boolean = false) => {
     try {
@@ -42,23 +38,32 @@ export default function TrendingPage() {
         setLoadingMore(true);
       }
 
-      // Fetch trending videos
-      const response = await videoService.getTrendingVideos({
+      // Use simple getVideos with sorting by views (like recommended does)
+      const response = await videoService.getVideos({
+        page: pageNum,
         limit: 20,
-        category: category === 'now' ? undefined : category
+        category: category === 'now' ? undefined : category,
+        sortBy: 'views',
+        sortOrder: 'desc'
       });
 
       console.log('Trending: Got', response.videos?.length || 0, 'videos');
       
-      // Always replace videos for trending (no append)
-      if (response.videos && response.videos.length > 0) {
-        dispatch(setVideos(response.videos));
+      if (response && response.videos) {
+        if (append) {
+          dispatch(appendVideos(response.videos));
+        } else {
+          dispatch(setVideos(response.videos));
+        }
+        
+        // Check if we have more pages
+        const hasMorePages = response.pagination && 
+                            response.pagination.current < response.pagination.pages &&
+                            response.videos.length > 0;
+        setHasMore(hasMorePages || false);
       } else {
-        dispatch(setVideos([]));
+        setHasMore(false);
       }
-
-      // Since trending endpoint doesn't have pagination, set hasMore to false after first load
-      setHasMore(pageNum === 1 && response.videos.length >= 20);
     } catch (error) {
       console.error('Error fetching trending videos:', error);
     } finally {
@@ -68,20 +73,11 @@ export default function TrendingPage() {
   };
 
   useEffect(() => {
-    // Always fetch fresh data when page loads or category changes
-    dispatch(setVideos([])); // Clear old videos first
+    // Fetch fresh data when category changes
     setPage(1);
     setHasMore(true);
     fetchTrendingVideos(selectedCategory, 1);
-    
-    // Set up interval to refresh every 5 seconds for immediate visibility
-    const interval = setInterval(() => {
-      dispatch(setVideos([])); // Clear first
-      fetchTrendingVideos(selectedCategory, 1);
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [selectedCategory]); // Remove dispatch dependency
+  }, [selectedCategory]);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);

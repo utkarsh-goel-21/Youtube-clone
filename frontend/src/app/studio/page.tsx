@@ -53,8 +53,6 @@ export default function StudioPage() {
       return;
     }
     
-    // Force clear old data
-    setVideos([]);
     fetchData();
   }, [isAuthenticated, activeTab, period]);
 
@@ -122,15 +120,14 @@ export default function StudioPage() {
           });
         }
       } else if (activeTab === 'videos') {
-        // Fetch user's videos - use the my-videos endpoint for authenticated user
+        // Fetch user's videos directly - simpler approach like recommended
         console.log('Fetching videos for authenticated user');
         
         try {
-          // Fetch ALL videos (use high limit to ensure we get everything)
-          const videosRes = await api.get('/videos/my-videos?limit=100');
+          // Get user's channel videos using the standard endpoint
+          const videosRes = await api.get(`/videos/channel/${user._id || user.id}`);
           console.log('Videos response:', videosRes.data);
           console.log('Total videos fetched:', videosRes.data.videos?.length);
-          console.log('Total videos in DB:', videosRes.data.pagination?.total);
           setVideos(videosRes.data.videos || []);
           
           // Calculate and set analytics from fetched videos
