@@ -43,25 +43,23 @@ app.use(responseTimeMiddleware);
 app.use(etagMiddleware);
 app.use(optimizeJsonMiddleware);
 
+// CORS configuration - Allow all origins in production for now
 app.use(cors({
   origin: function(origin, callback) {
-    // In production, allow all Vercel URLs and localhost for development
+    // In production, allow ALL origins (we can restrict later)
+    if (process.env.NODE_ENV === 'production') {
+      return callback(null, true);
+    }
+    
+    // In development, allow localhost
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001', 
-      'http://localhost:3002',
-      'https://youtube-clone-sigma-smoky.vercel.app',
-      'https://youtube-clone-git-main-utkarsh-s-projects-e6928c10.vercel.app',
-      'https://youtube-clone-blvrltf3y-utkarsh-s-projects-e6928c10.vercel.app'
+      'http://localhost:3002'
     ];
     
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    
-    // In production, also allow any Vercel app subdomain
-    if (process.env.NODE_ENV === 'production' && origin.includes('vercel.app')) {
-      return callback(null, true);
-    }
     
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
