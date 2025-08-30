@@ -43,8 +43,14 @@ export default function TrendingPage() {
         category: category === 'now' ? undefined : category
       });
 
+      console.log('Trending: Got', response.videos?.length || 0, 'videos');
+      
       // Always replace videos for trending (no append)
-      dispatch(setVideos(response.videos));
+      if (response.videos && response.videos.length > 0) {
+        dispatch(setVideos(response.videos));
+      } else {
+        dispatch(setVideos([]));
+      }
 
       // Since trending endpoint doesn't have pagination, set hasMore to false after first load
       setHasMore(pageNum === 1 && response.videos.length >= 20);
@@ -59,9 +65,9 @@ export default function TrendingPage() {
   useEffect(() => {
     // Always fetch fresh data when page loads or category changes
     dispatch(setVideos([])); // Clear old videos first
-    fetchTrendingVideos(selectedCategory, 1);
     setPage(1);
     setHasMore(true);
+    fetchTrendingVideos(selectedCategory, 1);
     
     // Set up interval to refresh every 5 seconds for immediate visibility
     const interval = setInterval(() => {
@@ -70,7 +76,7 @@ export default function TrendingPage() {
     }, 5000);
     
     return () => clearInterval(interval);
-  }, [selectedCategory, dispatch]);
+  }, [selectedCategory]); // Remove dispatch dependency
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);

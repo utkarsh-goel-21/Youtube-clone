@@ -34,10 +34,13 @@ export default function WatchPage() {
       dispatch(fetchRelatedVideos(id as string) as any);
       dispatch(fetchComments({ videoId: id as string }) as any);
       
-      // Add to watch history
-      import('../../../services/videoService').then(({ videoService }) => {
-        videoService.addToWatchHistory(id as string, 0).catch(console.error);
-      });
+      // Add to watch history only if user is logged in
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      if (token) {
+        import('../../../services/videoService').then(({ videoService }) => {
+          videoService.addToWatchHistory(id as string, 0).catch(console.error);
+        });
+      }
     }
   }, [id, dispatch]);
 
