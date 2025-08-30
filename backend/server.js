@@ -106,8 +106,31 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/streams', streamRoutes);
 app.use('/api/moderation', moderationRoutes);
 
+// Health check endpoint for monitoring
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
+  const healthcheck = {
+    uptime: process.uptime(),
+    status: 'OK',
+    timestamp: Date.now(),
+    message: 'Server is running',
+    environment: process.env.NODE_ENV || 'development',
+    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  };
+  res.status(200).json(healthcheck);
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'YouTube Clone API Server',
+    status: 'Running',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      videos: '/api/videos',
+      users: '/api/users'
+    }
+  });
 });
 
 // Store socket connections by user ID
@@ -158,4 +181,24 @@ app.set('streamManager', streamManager);
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // In production, log the server URL for monitoring
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Server is ready to accept connections');
+    console.log('Health check available at: /api/health');
+    
+    // Optional: Self-ping to keep warm (works with Render's free tier)
+    // This helps but UptimeRobot is still recommended
+    if (process.env.RENDER_EXTERNAL_URL) {
+      const https = require('https');
+      setInterval(() => {
+        https.get(`${process.env.RENDER_EXTERNAL_URL}/api/health`, (res) => {
+          console.log(`Self-ping: ${res.statusCode}`);
+        }).on('error', (err) => {
+          console.error('Self-ping error:', err.message);
+        });
+      }, 5 * 60 * 1000); // Ping every 5 minutes
+    }
+  }
 });
