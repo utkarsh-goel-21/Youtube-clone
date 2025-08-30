@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { 
-  User, 
+  User as UserIcon, 
   Settings, 
   LogOut, 
   Upload, 
@@ -104,7 +104,7 @@ export default function UserMenu({ user, onClose, onLogout }: UserMenuProps) {
             />
           ) : (
             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-              <User size={24} />
+              <UserIcon size={24} />
             </div>
           )}
           <div className="flex-1 min-w-0">
