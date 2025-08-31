@@ -90,8 +90,6 @@ function HomeContent() {
   }, [categoryParam]);
 
   useEffect(() => {
-    // Clear any cached videos and fetch fresh data
-    dispatch(setVideos([])); // Clear cached videos
     setPage(1);
     setHasMore(true);
     fetchVideos(selectedCategory, 1);
