@@ -66,7 +66,8 @@ export default function StudioPage() {
         // Always fetch videos directly to calculate stats (more reliable)
         try {
           // Use my-videos endpoint to ensure we only get current user's videos
-          const videosRes = await api.get('/videos/my-videos?limit=1000');
+          // Add timestamp to bypass any caching
+          const videosRes = await api.get(`/videos/my-videos?limit=1000&t=${Date.now()}`);
           const userVideos = videosRes.data.videos || [];
           
           // Calculate stats from videos
@@ -121,8 +122,9 @@ export default function StudioPage() {
       } else if (activeTab === 'videos') {
         // Fetch user's videos using my-videos endpoint
         try {
-          // Use my-videos endpoint to ensure we only get current user's videos  
-          const videosRes = await api.get('/videos/my-videos?limit=1000');
+          // Use my-videos endpoint to ensure we only get current user's videos
+          // Add timestamp to bypass any caching
+          const videosRes = await api.get(`/videos/my-videos?limit=1000&t=${Date.now()}`);
           setVideos(videosRes.data.videos || []);
           
           // Calculate and set analytics from fetched videos

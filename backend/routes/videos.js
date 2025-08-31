@@ -94,6 +94,12 @@ router.get('/my-videos', auth, async (req, res) => {
     // Convert to JSON to apply transforms
     const videosJSON = videos.map(v => v.toJSON());
     
+    // Disable caching to ensure new videos show immediately
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('X-Cache', 'DISABLED');
+    
     res.json({
       videos: videosJSON,
       pagination: {
