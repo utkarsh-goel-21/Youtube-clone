@@ -56,17 +56,17 @@ export default function WatchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
       
-      <div className="flex">
+      <div className="flex relative">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         
         <main className={`flex-1 transition-all duration-300 ${
-          sidebarOpen ? 'ml-64' : 'ml-0'
-        } lg:ml-64 pt-16 bg-gray-50 dark:bg-gray-900`}>
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col lg:flex-row gap-6 p-4">
+          sidebarOpen ? 'lg:ml-64' : 'ml-0'
+        } lg:ml-64 pt-14 sm:pt-16 bg-gray-50 dark:bg-gray-900 overflow-x-hidden`}>
+          <div className="w-full max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 p-2 sm:p-4">
               {/* Main content */}
               <div className="flex-1 min-w-0">
                 {/* Video player */}

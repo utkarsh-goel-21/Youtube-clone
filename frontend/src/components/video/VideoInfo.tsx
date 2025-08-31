@@ -118,26 +118,26 @@ export default function VideoInfo({ video }: VideoInfoProps) {
       </h1>
 
       {/* Stats and actions */}
-      <div className="flex flex-wrap items-center justify-between pb-4 border-b">
+      <div className="flex flex-col gap-3 pb-4 border-b">
         {/* View count and date */}
-        <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm mb-2 sm:mb-0">
+        <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
           <span>{formatNumber(video.views)} views</span>
           <span className="mx-2">•</span>
           <span>{formatDate(video.uploadedAt)}</span>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center space-x-2">
+        {/* Action buttons - Scrollable on mobile */}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin pb-1">
           {/* Like/Dislike */}
-          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full">
+          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full flex-shrink-0">
             <button
               onClick={handleLike}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-l-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-l-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
                 video.userInteraction?.liked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
               }`}
             >
-              <ThumbsUp size={20} className={video.userInteraction?.liked ? 'fill-current' : ''} />
-              <span className="font-medium">
+              <ThumbsUp size={18} className={video.userInteraction?.liked ? 'fill-current' : ''} />
+              <span className="font-medium text-sm sm:text-base">
                 {formatNumber(video.likesCount || 0)}
               </span>
             </button>
@@ -146,22 +146,22 @@ export default function VideoInfo({ video }: VideoInfoProps) {
             
             <button
               onClick={handleDislike}
-              className={`flex items-center px-4 py-2 rounded-r-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
+              className={`flex items-center px-3 sm:px-4 py-2 rounded-r-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
                 video.userInteraction?.disliked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
               }`}
             >
-              <ThumbsDown size={20} className={video.userInteraction?.disliked ? 'fill-current' : ''} />
+              <ThumbsDown size={18} className={video.userInteraction?.disliked ? 'fill-current' : ''} />
             </button>
           </div>
 
           {/* Share */}
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowShareMenu(!showShareMenu)}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
             >
-              <Share2 size={20} />
-              <span className="font-medium">Share</span>
+              <Share2 size={18} />
+              <span className="font-medium text-sm sm:text-base">Share</span>
             </button>
 
             {showShareMenu && (
@@ -185,18 +185,18 @@ export default function VideoInfo({ video }: VideoInfoProps) {
           {/* Save */}
           <button 
             onClick={() => setShowSaveModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-gray-700">
-            <BookmarkPlus size={20} />
-            <span className="font-medium">Save</span>
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0">
+            <BookmarkPlus size={18} />
+            <span className="font-medium text-sm sm:text-base">Save</span>
           </button>
 
           {/* More options */}
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowMoreMenu(!showMoreMenu)}
               className="p-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
             >
-              <MoreHorizontal size={20} />
+              <MoreHorizontal size={18} />
             </button>
 
             {showMoreMenu && (
@@ -218,11 +218,11 @@ export default function VideoInfo({ video }: VideoInfoProps) {
       </div>
 
       {/* Channel info */}
-      <div className="flex items-center justify-between mt-4">
-        <Link href={`/channel/${video.author._id}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4">
+        <Link href={`/channel/${video.author._id}`} className="flex-1">
           <div className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             {/* Channel avatar */}
-            <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
               {video.author.avatar ? (
                 <img 
                   src={video.author.avatar} 
@@ -237,16 +237,16 @@ export default function VideoInfo({ video }: VideoInfoProps) {
             </div>
 
             {/* Channel name and subscriber count */}
-            <div>
-              <p className="font-semibold text-gray-900 dark:text-white flex items-center">
-                {video.author.channelName}
+            <div className="min-w-0">
+              <p className="font-semibold text-gray-900 dark:text-white flex items-center text-sm sm:text-base">
+                <span className="truncate">{video.author.channelName}</span>
                 {video.author.isVerified && (
-                  <svg className="w-4 h-4 ml-1 text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4 ml-1 text-gray-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                   </svg>
                 )}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 {formatNumber(video.author.subscriberCount || 0)} subscribers
               </p>
             </div>
@@ -257,7 +257,7 @@ export default function VideoInfo({ video }: VideoInfoProps) {
         {video.author._id !== user?._id && (
           <button 
             onClick={handleSubscribe}
-            className={`px-4 py-2 font-medium rounded-full transition-colors ${
+            className={`px-4 py-2 font-medium text-sm sm:text-base rounded-full transition-colors flex-shrink-0 ${
               isSubscribed 
                 ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
                 : 'bg-red-600 text-white hover:bg-red-700'
