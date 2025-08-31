@@ -6,14 +6,24 @@
 @layer base {
   html {
     @apply scroll-smooth;
+    width: 100%;
+    overflow-x: hidden;
   }
   
   body {
     @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen;
+    width: 100%;
+    overflow-x: hidden;
   }
   
   * {
     @apply box-border;
+    max-width: 100vw;
+  }
+  
+  #__next, #root {
+    width: 100%;
+    overflow-x: hidden;
   }
 }
 

@@ -111,19 +111,19 @@ function HomeContent() {
   }, [page, loadingMore, hasMore, selectedCategory, videos.length]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
       
-      <div className="flex">
+      <div className="flex relative">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         
         <main className={`flex-1 transition-all duration-300 ${
-          sidebarOpen ? 'ml-64' : 'ml-0'
-        } lg:ml-64 pt-16 min-h-screen`}>
-          <div className="w-full px-2 sm:px-4 py-4 sm:py-6 max-w-[2000px] mx-auto">
+          sidebarOpen ? 'lg:ml-64' : 'ml-0'
+        } lg:ml-64 pt-14 sm:pt-16 min-h-screen overflow-x-hidden`}>
+          <div className="w-full px-2 sm:px-4 py-4 sm:py-6">
             {/* Category filters */}
-            <div className="mb-6 -mx-4 px-4 overflow-x-auto">
-              <div className="flex gap-2 pb-2">
+            <div className="mb-6 overflow-x-auto -mx-2 sm:-mx-4 px-2 sm:px-4">
+              <div className="flex gap-2 pb-2 min-w-max">
                 {categories.map((category) => (
                   <button
                     key={category}

@@ -49,12 +49,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="theme-color" content="#000000" />
       </head>
-      <body className={`${inter.className} min-h-screen`}>
+      <body className={`${inter.className} min-h-screen overflow-x-hidden`}>
         <Provider store={store}>
-          <div id="root" className="min-h-screen">
+          <div id="root" className="min-h-screen overflow-x-hidden">
             {children}
           </div>
         </Provider>
