@@ -171,4 +171,10 @@ claude.md
 youtube-clone-donetillnow.md
 delete-test-videos.js
 verify-*.js
-test-*.js.claude/
+test-*.js
+fix-*.js
+check-*.js
+backend/check-*.js
+backend/test-*.js
+backend/fix-*.js
+.claude/
