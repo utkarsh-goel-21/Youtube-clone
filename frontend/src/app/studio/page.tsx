@@ -66,8 +66,8 @@ export default function StudioPage() {
         // Always fetch videos directly to calculate stats (more reliable)
         console.log('Fetching videos for dashboard stats...');
         try {
-          // Use same endpoint as content tab for consistency
-          const videosRes = await api.get(`/videos/channel/${user._id || user.id}`);
+          // Use my-videos endpoint to ensure we only get current user's videos
+          const videosRes = await api.get('/videos/my-videos?limit=100');
           const userVideos = videosRes.data.videos || [];
           console.log(`Fetched ${userVideos.length} videos for stats calculation`);
           
@@ -121,12 +121,12 @@ export default function StudioPage() {
           });
         }
       } else if (activeTab === 'videos') {
-        // Fetch user's videos directly - simpler approach like recommended
+        // Fetch user's videos using my-videos endpoint
         console.log('Fetching videos for authenticated user');
         
         try {
-          // Get user's channel videos using the standard endpoint
-          const videosRes = await api.get(`/videos/channel/${user._id || user.id}`);
+          // Use my-videos endpoint to ensure we only get current user's videos
+          const videosRes = await api.get('/videos/my-videos?limit=100');
           console.log('Videos response:', videosRes.data);
           console.log('Total videos fetched:', videosRes.data.videos?.length);
           setVideos(videosRes.data.videos || []);
