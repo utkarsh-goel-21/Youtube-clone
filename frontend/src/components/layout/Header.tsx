@@ -8,9 +8,10 @@ import Image from 'next/image';
 import { RootState } from '../../store/store';
 import { logout, getCurrentUser } from '../../store/slices/authSlice';
 import SearchBar from './SearchBar';
+import MobileSearch from './MobileSearch';
 import UserMenu from './UserMenu';
 import NotificationCenter from '../notification/NotificationCenter';
-import { Menu, Upload, Bell, User, LogIn } from 'lucide-react';
+import { Menu, Upload, Bell, User, LogIn, Search } from 'lucide-react';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -21,6 +22,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is authenticated on component mount
@@ -64,13 +66,22 @@ export default function Header({ onMenuClick }: HeaderProps) {
           </Link>
         </div>
 
-        {/* Center section */}
-        <div className="flex-1 max-w-2xl mx-4">
+        {/* Center section - Hide on mobile, show search icon instead */}
+        <div className="hidden sm:flex flex-1 max-w-2xl mx-4">
           <SearchBar />
         </div>
 
         {/* Right section */}
         <div className="flex items-center gap-2">
+          {/* Mobile search button */}
+          <button
+            onClick={() => setMobileSearchOpen(true)}
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 sm:hidden text-gray-700 dark:text-gray-300"
+            aria-label="Search"
+          >
+            <Search size={20} />
+          </button>
+          
           <button
             onClick={handleUpload}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 hidden sm:flex text-gray-700 dark:text-gray-300"
@@ -127,6 +138,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
           )}
         </div>
       </div>
+      
+      {/* Mobile Search Modal */}
+      <MobileSearch isOpen={mobileSearchOpen} onClose={() => setMobileSearchOpen(false)} />
     </header>
   );
 }
