@@ -64,12 +64,10 @@ export default function StudioPage() {
       
       if (activeTab === 'dashboard') {
         // Always fetch videos directly to calculate stats (more reliable)
-        console.log('Fetching videos for dashboard stats...');
         try {
           // Use my-videos endpoint to ensure we only get current user's videos
-          const videosRes = await api.get('/videos/my-videos?limit=100');
+          const videosRes = await api.get('/videos/my-videos?limit=1000');
           const userVideos = videosRes.data.videos || [];
-          console.log(`Fetched ${userVideos.length} videos for stats calculation`);
           
           // Calculate stats from videos
           const totalViews = userVideos.reduce((sum: number, v: any) => sum + (v.views || 0), 0);
@@ -122,13 +120,9 @@ export default function StudioPage() {
         }
       } else if (activeTab === 'videos') {
         // Fetch user's videos using my-videos endpoint
-        console.log('Fetching videos for authenticated user');
-        
         try {
-          // Use my-videos endpoint to ensure we only get current user's videos
-          const videosRes = await api.get('/videos/my-videos?limit=100');
-          console.log('Videos response:', videosRes.data);
-          console.log('Total videos fetched:', videosRes.data.videos?.length);
+          // Use my-videos endpoint to ensure we only get current user's videos  
+          const videosRes = await api.get('/videos/my-videos?limit=1000');
           setVideos(videosRes.data.videos || []);
           
           // Calculate and set analytics from fetched videos

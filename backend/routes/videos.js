@@ -74,26 +74,22 @@ router.get('/subscriptions', auth, async (req, res) => {
 // Get current user's videos (must be before /:id route)
 router.get('/my-videos', auth, async (req, res) => {
   try {
-    console.log('MY-VIDEOS: User ID:', req.user._id);
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
     
-    const videos = await Video.find({ 
+    // Get ALL user's videos without pagination first to ensure we get everything
+    const allVideos = await Video.find({ 
       author: req.user._id,
       status: { $ne: 'deleted' }
     })
       .populate('author', 'username channelName avatar isVerified')
-      .sort({ uploadedAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Video.countDocuments({ 
-      author: req.user._id,
-      status: { $ne: 'deleted' }
-    });
+      .sort({ uploadedAt: -1 });
     
-    console.log('MY-VIDEOS: Found', videos.length, 'videos out of', total, 'total');
+    // Apply pagination on the fetched results
+    const videos = allVideos.slice(skip, skip + limit);
+
+    const total = allVideos.length;
 
     // Convert to JSON to apply transforms
     const videosJSON = videos.map(v => v.toJSON());
