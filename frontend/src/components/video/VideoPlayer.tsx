@@ -288,38 +288,41 @@ export default function VideoPlayer({ video, autoplay = false }: VideoPlayerProp
 
         {/* Control buttons */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => skipTime(-10)}
-              className="text-white hover:text-gray-300 transition-colors"
-              aria-label="Skip back 10 seconds"
-            >
-              <SkipBack size={24} />
-            </button>
-
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Play/Pause button - always visible */}
             <button
               onClick={togglePlay}
               className="text-white hover:text-gray-300 transition-colors"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
-              {isPlaying ? <Pause size={28} /> : <Play size={28} />}
+              {isPlaying ? <Pause size={20} className="sm:w-7 sm:h-7" /> : <Play size={20} className="sm:w-7 sm:h-7" />}
+            </button>
+
+            {/* Skip buttons - hidden on very small screens */}
+            <button
+              onClick={() => skipTime(-10)}
+              className="hidden sm:block text-white hover:text-gray-300 transition-colors"
+              aria-label="Skip back 10 seconds"
+            >
+              <SkipBack size={20} className="sm:w-6 sm:h-6" />
             </button>
 
             <button
               onClick={() => skipTime(10)}
-              className="text-white hover:text-gray-300 transition-colors"
+              className="hidden sm:block text-white hover:text-gray-300 transition-colors"
               aria-label="Skip forward 10 seconds"
             >
-              <SkipForward size={24} />
+              <SkipForward size={20} className="sm:w-6 sm:h-6" />
             </button>
 
-            <div className="flex items-center space-x-2">
+            {/* Volume controls - simplified on mobile */}
+            <div className="flex items-center space-x-1 sm:space-x-2">
               <button
                 onClick={toggleMute}
                 className="text-white hover:text-gray-300 transition-colors"
                 aria-label={isMuted ? 'Unmute' : 'Mute'}
               >
-                {isMuted || volume === 0 ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                {isMuted || volume === 0 ? <VolumeX size={20} className="sm:w-6 sm:h-6" /> : <Volume2 size={20} className="sm:w-6 sm:h-6" />}
               </button>
 
               <input
@@ -329,29 +332,32 @@ export default function VideoPlayer({ video, autoplay = false }: VideoPlayerProp
                 step="0.1"
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
-                className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+                className="hidden sm:block w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
               />
             </div>
 
-            <div className="text-white text-sm">
+            {/* Time display */}
+            <div className="text-white text-xs sm:text-sm">
               {formatDuration(currentTime)} / {formatDuration(duration)}
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* Settings - hidden on mobile */}
             <button
-              className="text-white hover:text-gray-300 transition-colors"
+              className="hidden sm:block text-white hover:text-gray-300 transition-colors"
               aria-label="Settings"
             >
-              <Settings size={24} />
+              <Settings size={20} className="sm:w-6 sm:h-6" />
             </button>
 
+            {/* Fullscreen - always visible */}
             <button
               onClick={toggleFullscreen}
               className="text-white hover:text-gray-300 transition-colors"
               aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             >
-              {isFullscreen ? <Minimize size={24} /> : <Maximize size={24} />}
+              {isFullscreen ? <Minimize size={20} className="sm:w-6 sm:h-6" /> : <Maximize size={20} className="sm:w-6 sm:h-6" />}
             </button>
           </div>
         </div>

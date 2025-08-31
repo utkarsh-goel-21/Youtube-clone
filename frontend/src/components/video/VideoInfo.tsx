@@ -127,30 +127,30 @@ export default function VideoInfo({ video }: VideoInfoProps) {
         </div>
 
         {/* Action buttons - Scrollable on mobile */}
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-thin pb-1">
+        <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-thin pb-1">
           {/* Like/Dislike */}
           <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full flex-shrink-0">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-l-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
+              className={`flex items-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 rounded-l-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
                 video.userInteraction?.liked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
               }`}
             >
-              <ThumbsUp size={18} className={video.userInteraction?.liked ? 'fill-current' : ''} />
-              <span className="font-medium text-sm sm:text-base">
+              <ThumbsUp size={14} className={`sm:w-[18px] sm:h-[18px] ${video.userInteraction?.liked ? 'fill-current' : ''}`} />
+              <span className="font-medium text-xs sm:text-base">
                 {formatNumber(video.likesCount || 0)}
               </span>
             </button>
             
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600" />
+            <div className="w-px h-4 sm:h-6 bg-gray-300 dark:bg-gray-600" />
             
             <button
               onClick={handleDislike}
-              className={`flex items-center px-3 sm:px-4 py-2 rounded-r-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
+              className={`flex items-center px-2 sm:px-4 py-1.5 sm:py-2 rounded-r-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors ${
                 video.userInteraction?.disliked ? 'text-blue-600' : 'text-gray-700 dark:text-gray-300'
               }`}
             >
-              <ThumbsDown size={18} className={video.userInteraction?.disliked ? 'fill-current' : ''} />
+              <ThumbsDown size={14} className={`sm:w-[18px] sm:h-[18px] ${video.userInteraction?.disliked ? 'fill-current' : ''}`} />
             </button>
           </div>
 
@@ -158,10 +158,10 @@ export default function VideoInfo({ video }: VideoInfoProps) {
           <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowShareMenu(!showShareMenu)}
-              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
+              className="flex items-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
             >
-              <Share2 size={18} />
-              <span className="font-medium text-sm sm:text-base">Share</span>
+              <Share2 size={14} className="sm:w-[18px] sm:h-[18px]" />
+              <span className="font-medium text-xs sm:text-base">Share</span>
             </button>
 
             {showShareMenu && (
@@ -185,18 +185,18 @@ export default function VideoInfo({ video }: VideoInfoProps) {
           {/* Save */}
           <button 
             onClick={() => setShowSaveModal(true)}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0">
-            <BookmarkPlus size={18} />
-            <span className="font-medium text-sm sm:text-base">Save</span>
+            className="flex items-center gap-1 px-2 sm:px-4 py-1.5 sm:py-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300 flex-shrink-0">
+            <BookmarkPlus size={14} className="sm:w-[18px] sm:h-[18px]" />
+            <span className="font-medium text-xs sm:text-base">Save</span>
           </button>
 
           {/* More options */}
           <div className="relative flex-shrink-0">
             <button
               onClick={() => setShowMoreMenu(!showMoreMenu)}
-              className="p-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
+              className="p-1.5 sm:p-2 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-gray-700 dark:text-gray-300"
             >
-              <MoreHorizontal size={18} />
+              <MoreHorizontal size={14} className="sm:w-[18px] sm:h-[18px]" />
             </button>
 
             {showMoreMenu && (
