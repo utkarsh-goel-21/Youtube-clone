@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen;
+  }
+  
+  * {
+    @apply box-border;
+  }
+}
+
 /* Custom scrollbar styles */
 .scrollbar-thin {
   scrollbar-width: thin;

@@ -48,9 +48,13 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        <meta name="theme-color" content="#000000" />
+      </head>
+      <body className={`${inter.className} min-h-screen`}>
         <Provider store={store}>
-          <div id="root">
+          <div id="root" className="min-h-screen">
             {children}
           </div>
         </Provider>

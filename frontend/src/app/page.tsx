@@ -119,8 +119,8 @@ function HomeContent() {
         
         <main className={`flex-1 transition-all duration-300 ${
           sidebarOpen ? 'ml-64' : 'ml-0'
-        } lg:ml-64 pt-16`}>
-          <div className="container mx-auto px-4 py-6">
+        } lg:ml-64 pt-16 min-h-screen`}>
+          <div className="w-full px-2 sm:px-4 py-4 sm:py-6 max-w-[2000px] mx-auto">
             {/* Category filters */}
             <div className="mb-6 -mx-4 px-4 overflow-x-auto">
               <div className="flex gap-2 pb-2">

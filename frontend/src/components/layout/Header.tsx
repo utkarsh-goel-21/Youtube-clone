@@ -47,7 +47,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div className="flex items-center justify-between px-4 py-2 h-16">
+      <div className="flex items-center justify-between px-2 sm:px-4 py-2 h-14 sm:h-16">
         {/* Left section */}
         <div className="flex items-center gap-4">
           <button

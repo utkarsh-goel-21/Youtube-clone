@@ -17,9 +17,9 @@ export default function VideoCard({ video, showChannel = true }: VideoCardProps)
   const timeAgo = formatDistanceToNow(uploadedAt, { addSuffix: true });
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden hover:shadow-md dark:hover:shadow-gray-700 transition-shadow duration-200">
+    <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden hover:shadow-md dark:hover:shadow-gray-700 transition-shadow duration-200 w-full">
       {/* Thumbnail */}
-      <Link href={`/watch/${video._id}`} className="block relative aspect-video overflow-hidden">
+      <Link href={`/watch/${video._id}`} className="block relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-700">
         <LazyImage
           src={video.thumbnailUrl || '/images/default-thumbnail.jpg'}
           alt={video.title}
